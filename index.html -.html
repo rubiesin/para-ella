@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Para Ximena</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+    min-height: 100vh;
+    background: linear-gradient(160deg, #ffffff 0%, #fdf0f5 55%, #f9dce8 100%);
+    color: #111;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; position: relative; z-index: 2; }
+
+  .screen { display: none; width: 100%; max-width: 560px; text-align: center; animation: aparecer 1s ease; }
+  .screen.activa { display: block; }
+
+  @keyframes aparecer { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  .kicker { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #d77b9f; margin-bottom: 18px; }
+
+  h1 { font-weight: normal; font-size: clamp(30px, 7vw, 46px); line-height: 1.2; margin-bottom: 40px; }
+  h1 span { color: #d77b9f; font-style: italic; }
+
+  h2 { font-weight: normal; font-size: clamp(30px, 7vw, 42px); margin-bottom: 14px; }
+  .sub { font-style: italic; color: #555; font-size: 18px; margin-bottom: 30px; }
+
+  .botones { display: flex; gap: 18px; justify-content: center; align-items: center; min-height: 70px; }
+
+  button, .btn {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 40px;
+    padding: 15px 42px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform .2s ease, background .2s ease;
+  }
+
+  .btn-si { background: #f4b6cf; color: #111; border: none; box-shadow: 0 8px 24px rgba(215,123,159,.35); }
+  .btn-si:hover { transform: scale(1.05); background: #efa3c2; }
+
+  .btn-no { background: #fff; color: #111; border: 1px solid #111; position: relative; }
+
+  .btn-spotify { background: #111; color: #fff; border: none; margin: 10px 0 36px; }
+  .btn-spotify:hover { background: #333; }
+
+  .msg-preparado { font-size: 20px; color: #333; margin-bottom: 8px; }
+
+  /* Lista de canciones */
+  .lista { text-align: left; margin-top: 10px; }
+
+  .cancion {
+    background: rgba(255,255,255,.75);
+    border: 1px solid #f4cfdf;
+    border-radius: 18px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow .3s ease;
+  }
+  .cancion:hover { box-shadow: 0 6px 20px rgba(215,123,159,.18); }
+
+  .cabecera { padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .numero { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 12px; color: #d77b9f; letter-spacing: 2px; }
+  .titulo { font-size: 18px; }
+  .artista { font-size: 14px; color: #777; font-style: italic; }
+  .flecha { color: #d77b9f; transition: transform .3s ease; font-size: 18px; }
+  .cancion.abierta .flecha { transform: rotate(180deg); }
+
+  .letra { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s ease; }
+  .cancion.abierta .letra { grid-template-rows: 1fr; }
+  .letra > div { overflow: hidden; }
+  .letra-texto { padding: 0 22px; font-size: 16px; line-height: 1.9; color: #333; white-space: pre-line; }
+  .cancion.abierta .letra-texto { padding: 4px 22px 22px; }
+
+  .youtube { display: inline-block; margin-top: 14px; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; color: #111; text-decoration: none; border-bottom: 1px solid #d77b9f; padding-bottom: 2px; }
+
+  .firma { margin-top: 40px; font-style: italic; color: #d77b9f; font-size: 17px; }
+
+  /* Corazones flotantes */
+  .corazon { position: fixed; bottom: -40px; color: #f4b6cf; pointer-events: none; z-index: 1; animation: subir linear forwards; }
+  @keyframes subir { to { transform: translateY(-110vh) rotate(25deg); opacity: 0; } }
+
+  @media (max-width: 480px) {
+    .botones { flex-direction: column; gap: 14px; }
+    .btn-no, .btn-si { width: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!--
+  ===================================================
+  CONFIGURACIÓN: EDITA SOLO ESTA PARTE
+  - titulo, artista: nombre de la canción
+  - youtube: enlace de YouTube de esa canción
+  - letra: escribe la letra; usa \n para saltar de línea
+  - Si tienes menos de 10 canciones, borra los bloques sobrantes.
+    Si tienes más, copia un bloque { ... }, y pégalo con una coma.
+  ===================================================
+-->
+<script>
+const CONFIG = {
+  spotifyPlaylist: "https://open.spotify.com/playlist/REEMPLAZAR_CON_TU_PLAYLIST",
+  canciones: [
+    {
+      titulo: "Título de la canción 1",
+      artista: "Artista",
+      youtube: "https://www.youtube.com/watch?v=REEMPLAZAR",
+      letra: "Escribe aquí la letra de la canción\nen español, verso por verso.\n\nSegunda estrofa..."
+    },
+    {
+      titulo: "Título de la canción 2",
+      artista: "Artista",
+      youtube: "https://www.youtube.com/watch?v=REEMPLAZAR",
+      letra: "Escribe aquí la letra..."
+    },
+    {
+      titulo: "Título de la canción 3",
+      artista: "Artista",
+      youtube: "https://www.youtube.com/watch?v=REEMPLAZAR",
+      letra: "Escribe aquí la letra..."
+    }
+    // Agrega más canciones aquí (copia un bloque completo y pégalo abajo)
+  ]
+};
+</script>
+
+<main>
+  <!-- PANTALLA 1: LA PREGUNTA -->
+  <section id="pregunta" class="screen activa">
+    <p class="kicker">para ti</p>
+    <h1>Ximena, ¿quieres ser <span>mi novia</span>?</h1>
+    <div class="botones">
+      <button id="si" class="btn-si">Sí</button>
+      <button id="no" class="btn-no">No</button>
+    </div>
+  </section>
+
+  <!-- PANTALLA 2: RESPUESTA SÍ -->
+  <section id="respuesta" class="screen">
+    <h2>Bien ahí 💗</h2>
+    <div id="contenido" style="display:none;">
+      <p class="msg-preparado">Preparé esto para vos</p>
+      <a id="spotify" class="btn btn-spotify" href="#" target="_blank" rel="noopener">Escuchar en Spotify</a>
+      <div id="lista" class="lista"></div>
+      <p class="firma">Con todo mi cariño</p>
+    </div>
+  </section>
+</main>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const si = $("si");
+  const no = $("no");
+
+  /* ---------- BOTÓN NO: SE ESCAPA ---------- */
+  const frases = ["¿Segura?", "Pensalo otra vez", "Mira que te espero", "Nope 🙃", "Casi, casi..."];
+  let fraseIndex = 0;
+
+  function huir() {
+    no.style.position = "fixed";
+    const w = no.offsetWidth;
+    const h = no.offsetHeight;
+    const x = Math.random() * (window.innerWidth - w - 24) + 12;
+    const y = Math.random() * (window.innerHeight - h - 24) + 12;
+    no.style.left = x + "px";
+    no.style.top = y + "px";
+    no.textContent = frases[fraseIndex % frases.length];
+    fraseIndex++;
+  }
+
+  no.addEventListener("mouseenter", huir);
+  no.addEventListener("touchstart", (e) => { e.preventDefault(); huir(); }, { passive: false });
+  no.addEventListener("click", (e) => { e.preventDefault(); huir(); });
+
+  /* ---------- BOTÓN SÍ ---------- */
+  si.addEventListener("click", () => {
+    $("pregunta").classList.remove("activa");
+    $("respuesta").classList.add("activa");
+    lanzarCorazones(40);
+
+    setTimeout(() => {
+      $("contenido").style.display = "block";
+      $("bienahi-fin");
+      armarPlaylist();
+      armarLista();
+    }, 2200);
+  });
+
+  function armarPlaylist() {
+    $("spotify").href = CONFIG.spotifyPlaylist;
+  }
+
+  function armarLista() {
+    const cont = $("lista");
+    CONFIG.canciones.forEach((c, i) => {
+      const card = document.createElement("div");
+      card.className = "cancion";
+
+      const cab = document.createElement("div");
+      cab.className = "cabecera";
+      cab.innerHTML = `
+        <div>
+          <div class="numero">${String(i + 1).padStart(2, "0")}</div>
+          <div class="titulo"></div>
+          <div class="artista"></div>
+        </div>
+        <div class="flecha">▾</div>`;
+      cab.querySelector(".titulo").textContent = c.titulo;
+      cab.querySelector(".artista").textContent = c.artista;
+
+      const letra = document.createElement("div");
+      letra.className = "letra";
+      const inner = document.createElement("div");
+      const texto = document.createElement("div");
+      texto.className = "letra-texto";
+      texto.textContent = c.letra;
+      inner.appendChild(texto);
+
+      if (c.youtube && !c.youtube.includes("REEMPLAZAR")) {
+        const yt = document.createElement("a");
+        yt.className = "youtube";
+        yt.href = c.youtube;
+        yt.target = "_blank";
+        yt.rel = "noopener";
+        yt.textContent = "▶ Escuchar en YouTube";
+        yt.style.marginLeft = "22px";
+        yt.style.marginBottom = "18px";
+        yt.style.display = "inline-block";
+        yt.addEventListener("click", (e) => e.stopPropagation());
+        inner.appendChild(yt);
+      }
+
+      letra.appendChild(inner);
+      card.appendChild(cab);
+      card.appendChild(letra);
+
+      card.addEventListener("click", () => card.classList.toggle("abierta"));
+      cont.appendChild(card);
+    });
+  }
+
+  /* ---------- CORAZONES ---------- */
+  function lanzarCorazones(n) {
+    for (let i = 0; i < n; i++) {
+      setTimeout(() => {
+        const c = document.createElement("span");
+        c.className = "corazon";
+        c.textContent = "♥";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.fontSize = (12 + Math.random() * 22) + "px";
+        const dur = 4 + Math.random() * 4;
+        c.style.animationDuration = dur + "s";
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), dur * 1000);
+      }, i * 120);
+    }
+  }
+</script>
+
+</body>
+</html>
