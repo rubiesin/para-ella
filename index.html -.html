@@ -29,7 +29,6 @@
   h1 span { color: #d77b9f; font-style: italic; }
 
   h2 { font-weight: normal; font-size: clamp(30px, 7vw, 42px); margin-bottom: 14px; }
-  .sub { font-style: italic; color: #555; font-size: 18px; margin-bottom: 30px; }
 
   .botones { display: flex; gap: 18px; justify-content: center; align-items: center; min-height: 70px; }
 
@@ -60,30 +59,65 @@
   .lista { text-align: left; margin-top: 10px; }
 
   .cancion {
-    background: rgba(255,255,255,.75);
+    background: rgba(255,255,255,.85);
     border: 1px solid #f4cfdf;
     border-radius: 18px;
-    margin-bottom: 14px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: box-shadow .3s ease;
+    margin-bottom: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(215,123,159,.08);
   }
-  .cancion:hover { box-shadow: 0 6px 20px rgba(215,123,159,.18); }
 
-  .cabecera { padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-  .numero { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 12px; color: #d77b9f; letter-spacing: 2px; }
-  .titulo { font-size: 18px; }
-  .artista { font-size: 14px; color: #777; font-style: italic; }
-  .flecha { color: #d77b9f; transition: transform .3s ease; font-size: 18px; }
-  .cancion.abierta .flecha { transform: rotate(180deg); }
+  .cabecera-info { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .numero { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 11px; color: #d77b9f; letter-spacing: 2px; font-weight: bold; }
+  .titulo { font-size: 20px; color: #111; font-weight: normal; }
+  .artista { font-size: 14px; color: #666; font-style: italic; }
 
-  .letra { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s ease; }
-  .cancion.abierta .letra { grid-template-rows: 1fr; }
-  .letra > div { overflow: hidden; }
-  .letra-texto { padding: 0 22px; font-size: 16px; line-height: 1.9; color: #333; white-space: pre-line; }
-  .cancion.abierta .letra-texto { padding: 4px 22px 22px; }
+  .acciones { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 8px; }
 
-  .youtube { display: inline-block; margin-top: 14px; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; color: #111; text-decoration: none; border-bottom: 1px solid #d77b9f; padding-bottom: 2px; }
+  .btn-mensaje {
+    background: #fdf0f5;
+    color: #d77b9f;
+    border: 1px solid #f4cfdf;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: none;
+    box-shadow: none;
+  }
+  .btn-mensaje:hover { background: #f9dce8; transform: none; }
+
+  .youtube {
+    display: inline-block;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #111;
+    text-decoration: none;
+    border-bottom: 1px solid #d77b9f;
+    padding-bottom: 2px;
+  }
+
+  .mensaje-desplegable {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .4s ease;
+  }
+  .mensaje-desplegable.abierto { grid-template-rows: 1fr; }
+  .mensaje-desplegable > div { overflow: hidden; }
+  
+  .mensaje-texto {
+    margin-top: 14px;
+    padding: 16px;
+    background: #fff;
+    border-left: 3px solid #d77b9f;
+    border-radius: 0 12px 12px 0;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #444;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
 
   .firma { margin-top: 40px; font-style: italic; color: #d77b9f; font-size: 17px; }
 
@@ -99,39 +133,537 @@
 </head>
 <body>
 
-<!--
-  ===================================================
-  CONFIGURACIÓN: EDITA SOLO ESTA PARTE
-  - titulo, artista: nombre de la canción
-  - youtube: enlace de YouTube de esa canción
-  - letra: escribe la letra; usa \n para saltar de línea
-  - Si tienes menos de 10 canciones, borra los bloques sobrantes.
-    Si tienes más, copia un bloque { ... }, y pégalo con una coma.
-  ===================================================
--->
 <script>
 const CONFIG = {
-  spotifyPlaylist: "https://open.spotify.com/playlist/REEMPLAZAR_CON_TU_PLAYLIST",
+  spotifyPlaylist: "https://open.spotify.com/playlist/3pIQtlGqM27sT74oaZEY5G?si=8d53914d69af41eb&pt=adddafe9fdde540b7bf7e8b3b23c8dd8",
   canciones: [
     {
-      titulo: "Título de la canción 1",
-      artista: "Artista",
-      youtube: "https://www.youtube.com/watch?v=REEMPLAZAR",
-      letra: "Escribe aquí la letra de la canción\nen español, verso por verso.\n\nSegunda estrofa..."
+      titulo: "Fly me to the moon",
+      artista: "Frank Sinatra",
+      youtube: "https://www.youtube.com/watch?v=JYuyWrkwpok",
+      letra: `Fly me to the Moon (llevame a la luna)
+Let me play among the stars (dejame jugar entre las estrellas)
+Let me see what spring is like (dejame ver como se ve la primavera)
+On Jupiter and Mars (en júpiter y en marte)
+
+In other words (en otras palabras)
+Hold my hand (sontené mi mano)
+In other words (en otras palabras)
+Baby, kiss me (dame un beso bb)
+
+Fill my heart with song (llená mi corazón de canción)
+And let me sing forevermore (y dejame cantar por siempre)
+You are all I long for (sos todo lo que anhelo)
+All I worship and adore (todo lo que venero y adoro)
+
+In other words (en otras palabras)
+Please, be true (por favor, se real)
+In other words (en otras palabras)
+I love you (te amo)
+
+Fill my heart with song (llená mi corazón de canción)
+Let me sing forevermore (dejame cantar por siempre)
+You are all I long for (sos todo lo que anhelo)
+All I worship and adore (todo lo que venero y adoro)
+
+In other words (en otras palabras)
+Please, be true (por favor, se real)
+In other words (en otras palabras)
+In other words(en otras palabras)
+I love you (te amo)`
     },
     {
-      titulo: "Título de la canción 2",
-      artista: "Artista",
-      youtube: "https://www.youtube.com/watch?v=REEMPLAZAR",
-      letra: "Escribe aquí la letra..."
+      titulo: "I wanna be yours",
+      artista: "Artic Monkeys",
+      youtube: "https://www.youtube.com/watch?v=nyuo9-OjNNg",
+      letra: `I wanna be your vacuum cleaner (quiero ser tu aspiradora)
+Breathing in your dust (respirando tu polvo)
+I wanna be your Ford Cortina (quiero ser tu Ford Cortina)
+I will never rust (nunca me voy a oxidar)
+
+If you like your coffee hot (si te gusta tu café caliente)
+Let me be your coffee pot (dejame ser tu cafetera)
+You call the shots, babe (vos sos la que manda bb)
+I just wanna be yours (yo solo quiero ser tuyo)
+
+Secrets I have held in my heart (los secretos que guardo en mi corazón)
+Are harder to hide than I thought (son más difíciles de esconder de lo que pensé)
+Maybe I just wanna be yours (por ahí solo quiero ser tuyo)
+I wanna be yours, I wanna be yours (yo quiero ser tuyo)
+
+Wanna be yours (quiero ser tuyo)
+Wanna be yours (quiero ser tuyo)
+Wanna be yours (quiero ser tuyo)
+
+Let me be your 'leccy meter (dejame ser tu medidor de electricidad)
+And I'll never run out (y nunca voy a romperme)
+Let me be the portable heater (dejame ser tu calentador portátil)
+That you'll get cold without (sin el, te vas a enfriar)
+
+I wanna be your setting lotion (quiero ser tu fijador)
+Hold your hair in deep devotion (mantener tu pelo con profunda devoción)
+At least as deep as the Pacific Ocean (al menos tan profunda como el océano pacífico)
+I wanna be yours (quiero ser tuyo)
+
+Secrets I have held in my heart (los secretos que guardo en mi corazón)
+Are harder to hide than I thought (son más difíciles de esconder de lo que pensé)
+Maybe I just wanna be yours (por ahí solo quiero ser tuyo)
+I wanna be yours, I wanna be yours (yo quiero ser tuyo)
+
+(x2)
+Wanna be yours (quiero ser tuyo)
+Wanna be yours (quiero ser tuyo)
+Wanna be yours (quiero ser tuyo)
+Wanna be yours (quiero ser tuyo)
+
+I wanna be your vacuum cleaner (quiero ser tu aspiradora)
+Breathing in your dust (respirando tu polvo)
+I wanna be your Ford Cortina (quiero ser tu Ford Cortina)
+I will never rust (nunca me voy a oxidar)
+
+I just wanna be yours (solo quiero ser tuyo)
+I just wanna be yours (solo quiero ser tuyo)
+I just wanna be yours (solo quiero ser tuyo) `
     },
     {
-      titulo: "Título de la canción 3",
-      artista: "Artista",
-      youtube: "https://www.youtube.com/watch?v=REEMPLAZAR",
-      letra: "Escribe aquí la letra..."
+      titulo: "Insisto",
+      artista: "Ciro y los persas",
+      youtube: "http://youtube.com/watch?v=5FGjpmpAenM&list=RD5FGjpmpAenM&start_radio=1",
+      letra: `Yo la vi sin querer
+Buscaba alguna mujer que fuera el viento
+Fuera el viento en mi sien
+Y la vi, ¿qué iba a hacer?
+Una hermosa Lucifer robó mi tiempo
+Mi pensamiento y mi fe
+
+Y dejó detrás de sí,
+Tristes versos que oigo en mí
+
+¿Y qué más? Tarde gris
+Te diría: ¿Qué decís?
+Sí, te olvidaste, sí, te olvidaste de mí
+
+Si no fui mejor postor
+Fue aquel maldito temor
+Si yo pedía, vos te alejabas de mí
+
+Y quebró mi corazón,
+Como se quiebra un carbón
+Encendido
+
+Si yo te volviera a ver
+¡Insisto!
+Siempre te voy a querer
+¡Insisto!
+Aunque el tiempo diga no
+¡Insisto!
+Nunca morirá este amor
+
+Y quebró mi corazón
+Como se quiebra un carbón
+Encendido
+
+Si yo te volviera a ver
+¡Insisto!
+Siempre te voy a querer
+¡Insisto!
+Una hermosa Lucifer
+¡Insisto!
+Un demonio hecho mujer
+¡Insisto!
+Aunque el tiempo diga no
+¡Insisto!
+Nunca morirá este amor
+
+Nunca me perdonaré
+No haber hecho más, no sé
+El tiempo todo destruye, todo, lo sé`
+    },
+    {
+      titulo: "Just the two of us",
+      artista: "Grover Washington Jr.",
+      youtube: "https://www.youtube.com/watch?v=Uw5OLnN7UvM",
+      letra: `I see the crystal raindrops fall (veo caer las gotas de lluvia de cristal)
+And the beauty of it all (y lo hermoso de todo)
+Is when the Sun comes shining through (es cuando sale el sol brillante)
+To make those rainbows in my mind (para hacer ese acoiris en mi mente)
+When I think of you sometime (cuando pienso en vos alguna vez)
+And I want to spend some time with you (y quiero pasar un rato con vos)
+
+Just the two of us (solo nosotros dos)
+We can make it if we try (podemos hacerlo si lo intentamos)
+Just the two of us (solo nosotros dos)
+Just the two of us (solo nosotros dos)
+Building castles in the sky (construyendo castillos en el cielo)
+Just the two of us (solo nosotros dos)
+You and I (vos y yo)
+
+We look for love, no time for tears (buscamos el amor, no hay tiempo para lagrimas)
+Wasted water's all that is (el agua desperdiciada es todo lo que hay)
+And it don't make no flowers grow (y no hace crecer ninguna flor)
+Good things might come to those who wait (las cosas buenas llegan a los que esperan)
+Not for those who wait too late (no para aquellos que esperan demasiado tarde)
+We gotta go for all we know (tenemos que ir por todo lo que sabemos)
+
+Just the two of us (solo nosotros dos)
+We can make it if we try (podemos hacerlo si lo intentamos)
+Just the two of us (solo nosotros dos)
+Just the two of us (solo nosotros dos)
+Building castles in the sky (construyendo castillos en el cielo)
+Just the two of us (solo nosotros dos)
+You and I (vos y yo)
+
+I hear the crystal raindrops fall (escucho las gotas de lluvia de cristal cayendo)
+On the window, down the hall (en la ventana del pasillo)
+And it becomes the morning dew (y se convierte en el rocío de la mañana)
+And, darling, when the morning comes (cariño, cuando la mañana llegue)
+And I see the morning Sun (y vea el sol de la mañana)
+I want to be the one with you (quiero ser el que esté con vos)
+
+Just the two of us (solo nosotros dos)
+We can make it if we try (podemos hacerlo si lo intentamos)
+Just the two of us (solo nosotros dos)
+Just the two of us (solo nosotros dos)
+Building castles in the sky (construyendo castillos en el cielo)
+Just the two of us (solo nosotros dos)
+You and I (vos y yo)`
+    },
+    {
+      titulo: "La flaca",
+      artista: "Jarabe de Palo",
+      youtube: "https://www.youtube.com/watch?v=r2g0pM3PMNQ",
+      letra: `En la vida, conocí
+Mujer igual a la flaca
+Coral negro de la Habana
+Tremendísima mulata
+Cien libras de piel y hueso
+Cuarenta kilos de salsa
+Y, en la cara, dos soles
+Que, sin palabras, hablan
+Que, sin palabras, hablan
+
+La flaca duerme de día
+Dice que así el hambre engaña
+Y cuando cae la noche
+Baja a bailar a la tasca
+Y bailar y bailar
+Y tomar y tomar
+Una cerveza tras otra
+Pero ella nunca engorda
+Pero ella nunca engorda
+
+Por un beso de la flaca, daría lo que fuera
+Por un beso de ella, aunque solo uno fuera
+Por un beso de la flaca, daría lo que fuera
+Por un beso de ella, aunque solo uno fuera
+
+Aunque solo uno fuera
+
+Mojé mis sábanas blancas
+Como dice la canción
+Recordando las caricias
+Que me brindó el primer día
+Y enloquezco de ganas
+De dormir a su ladito
+Porque, Dios, que esta flaca
+A mí me tiene loquito, oh
+A mí me tiene loquito
+
+Por un beso de la flaca, yo daría lo que fuera
+Por un beso de ella, aunque solo uno fuera
+Por un beso de la flaca, yo daría lo que fuera
+Por un beso de ella, aunque solo uno fuera
+
+(x4)
+Aunque solo uno fuera
+Aunque solo uno fuera
+Aunque solo uno fuera
+Aunque solo uno fuera`
+    },
+    {
+      titulo: "Lonely day",
+      artista: "System of a Down",
+      youtube: "https://www.youtube.com/watch?v=DnGdoEa1tPg",
+      letra: `Such a lonely day (un día tan solitario)
+And it's mine (y es mio)
+The most loneliest day of my life (el día mas solitario de mi vida)
+Such a lonely day (un día tan solitario)
+Should be banned (debería prohibirse) 
+It's a day that I can't stand (es un día que no puedo soportar)
+
+The most loneliest day of my life (el día mas solitario de mi vida)
+The most loneliest day of my life (el día mas solitario de mi vida)
+
+Such a lonely day (un día tan solitario)
+Shouldn't exist (no debería existir)
+It's a day that I'll never miss (es un día que no voy a extrañar)
+Such a lonely day (un día tan solitario)
+And it's mine (y es mio)
+The most loneliest day of my life (el día mas solitario de mi vida)
+
+And if you go (y si te vas)
+I wanna go with you (yo quiero ir con vos)
+And if you die (y si morís)
+I wanna die with you (yo quiero morir con vos)
+Take your hand and walk away (agarrar tu mano e irnos lejos)
+
+The most loneliest day of my life (el día mas solitario de mi vida)
+The most loneliest day of my life (el día mas solitario de mi vida)
+The most loneliest day of my life (el día mas solitario de mi vida)
+
+Such a lonely day (un día tan solitario)
+And it's mine (y es mio)
+It's a day that I'm glad I survived (es un día que me alegro de haber sobrevivido)`
+    },
+    {
+      titulo: "Más allá",
+      artista: "Callejeros",
+      youtube: "https://www.youtube.com/watch?v=m3Y35tfS390",
+      letra: `Las palabras que custodian
+Al miedo ya se van a callar
+En los libros que nunca leí
+Tal vez, te deba buscar
+
+Y tu voz, mi amor, todavía
+A veces suena como un río sin fe
+Y en la multitud
+Un alud de alcohol
+De alcohol me dejaría sin ley
+
+Y, por favor, escúchame si querés esta vez
+Porque necesito verte bien
+Y sin tus manos voy cayendo sin red
+Desde esta cuerda de humo
+
+Ni un momento ni la eternidad
+Esto va más allá
+Con vos mi alma se volvió a iluminar
+Si no fuera porque vos estás
+Yo no estaría acá
+
+Desde tus ojos
+Se ve mucho más
+
+Los afiches, a la barra siniestra
+Ya no le sirven más, no
+Y los testigos falsos de la injusticia
+Ya la van a pagar
+
+Pero tu voz todavía a veces
+Suena como un río sin fe
+Y en la multitud
+Un alud de alcohol
+Me dejaría sin ley
+
+Y, por favor, escúchame si querés esta vez
+Porque necesito verte bien
+Y sin tus manos voy cayendo sin red
+El manco se queda mudo
+
+Ni un momento ni la eternidad
+Esto va más allá
+Con vos mi alma se volvió a iluminar
+Si no fuera porque vos estás
+Yo no estaría acá
+
+Misterio, tiempo, verdad
+Desde tus ojos se ve mucho más`
+    },
+    {
+      titulo: "My type",
+      artista: "Saint Motel",
+      youtube: "https://www.youtube.com/watch?v=IyVPyKrx0Xo",
+      letra: `Take a look around the room (mírate la habitación)
+Love comes wearing disguises (el amor viene usando disfraces)
+How to go about and choose (como ir y elegir)
+Break it down by shapes and sizes (rompelo por formas y tamaños)
+I'm a man who's got very specific taste (soy un hombre con un gusto muy especifico)
+
+You're, you're, you're just my type (vos sos, vos sos, vos sos mi tipo)
+You got a pulse and you are breathing (tenes pulso y estás respirando)
+You're, you're, you're just my type (vos sos, vos sos, vos sos mi tipo)
+I think it's time that we get leaving (creo que es hora de irnos)
+You're, you're, you're just my type (vos sos, vos sos, vos sos mi tipo)
+
+When there's loving in the air (cuando hay amor en el aire)
+Don't fight it just keep breathing (no pelees, solo respirá)
+I can't help myself but stare (no puedo ayudarme, solo mirarte fijamente)
+Double check for double meanings (doble verificación para dobles significados)
+I'm a man who's got very specific taste (soy un hombre con un gusto específico)
+
+(x2)
+You're, you're, you're just my type (vos sos, vos sos, vos sos mi tipo)
+You got a pulse and you are breathing (tenes pulso y estás respirando)
+You're, you're, you're just my type (vos sos, vos sos, vos sos mi tipo)
+I think it's time that we get leaving (creo que es hora de irnos)
+You're, you're, you're just my type (vos sos, vos sos, vos sos mi tipo)
+`
+    },
+    {
+      titulo: "Rompecabezas de amor",
+      artista: "Las pastillas del abuelo",
+      youtube: "https://www.youtube.com/watch?v=M05xCP34uUw",
+      letra: `Te amo, y te amo, y te amo, amor
+No me importa decirlo así
+Ya me pasó la última vez, que otro gil lo dijo por mí
+No quiero dejar pasar liberación tan esencial
+Si es infinito nuestro amor, no cabe en cajas de cristal
+Para nuestro cielo terrenal
+
+Cuando te veo sonreír, todo mi ser ríe con vos
+Y si te veo lagrimear, me entra la desesperación
+Te me metiste en la piel, me sobornaste la razón
+
+Con caricias de alto nivel, domesticás hasta un león
+Y a mí no me piensa el corazón
+
+No te paro de extrañar, aunque lo haya hecho canción
+Lo único que me calma es tu voz
+Atendiendo el celular, contestando un: Hola, amor
+Que me hace acordar que tengo hogar
+
+Rompecabezas de amor
+Habla el silencio por los dos
+Habla el festejo al construir tres cuadros predestinados
+Vos derritiendo al reloj
+Los dos trenzándonos los dos
+
+Y nuestras manos creándonos, dándonos vida
+Dándonos como solo se da si hay amor
+
+No te paro de extrañar aunque lo haya hecho canción
+Lo único que me calma es tu voz
+Atendiendo el celular contestando un: Hola, amor
+Él me hace acordar que tengo hogar`
+    },
+    {
+      titulo: "Somos Novios",
+      artista: "Luis Miguel",
+      youtube: "https://www.youtube.com/watch?v=FnOw7vIv9yA",
+      letra: `Somos novios
+Pues los dos sentimos mutuo amor profundo
+Y con eso ya ganamos lo más grande
+De este mundo
+
+Nos amamos, nos besamos
+Como novios
+Nos deseamos y hasta a veces sin motivo y
+Sin razón, nos enojamos
+
+Somos novios
+Mantenemos un cariño limpio y puro
+Como todos
+Procuramos el momento más obscuro
+
+(x2)
+Para hablarnos
+Para darnos el más dulce de los besos
+Recordar de qué color son los cerezos
+Sin hacer mas comentarios, somos novios`
+    },
+    {
+      titulo: "Sweater weather",
+      artista: "The neighbourhood",
+      youtube: "https://www.youtube.com/watch?v=GCdwKhTtNNw",
+      letra: `All I am is a man (todo lo que soy es un hombre)
+I want the world in my hands (quiero el mundo en mis manos)
+I hate the beach, but I stand (odio la playa, pero me quedo)
+In California, with my toes in the sand (en california con pies en la arena)
+
+Use the sleeves of my sweater (usá las mangas de mi sueter)
+Let's have an adventure (tengamos una aventura)
+Head in the clouds, but my gravity's centered (la cabeza en las nubes, pero centrado)
+Touch my neck and I'll touch yours (tocá mi cuello, y yo voy a tocar el tuyo)
+You in those little high waisted shorts, oh (vos con esos pantalones cortos y de cintura alta)
+
+She knows what I think about (ella sabe lo que pienso)
+And what I think about (y lo que pienso)
+One love, two mouths (un amor, dos bocas)
+One love, one house (un amor, una casa)
+No shirt, no blouse (sin remera, sin blusa)
+Just us, you find out (solo nosotros, lo vas a descubrir)
+Nothing that wouldn't wanna tell you about no (Nada que no quiera decirte)
+
+'Cause it's too cold (porque hace mucho frio)
+For you here and now (para vos acá)
+So let me hold (asi que, dejame sostener)
+Both your hands in the holes of my sweater (tus dos manos en las mangas de mi sueter)
+
+And if I may just take your breath away (y si pudiera dejarte sin aliento)
+I don't mind if there's not much to say (no me importa si no hay mucho que decir)
+Sometimes the silence guides our minds (a veces el silencio nos guía la mente)
+To move to a place so far away (hacia un lugar lejano)
+
+The goosebumps start to raise (los escalifrios son cada vez mas grandes)
+The minute that my left hand meets your waist (en el momento que mis manos encuentran tu cintura)
+And then I watch your face (y después veo tu cada)
+Put my finger on your tongue, 'cause you love to taste, yeah (pongo mi dedo en tu lengua, porque te encanta saborear jajajaj)
+
+These hearts adore (estos corazones adoran)
+Everyone the other beats hardest for (todos por quienes otro late mas fuerte)
+Inside, this place is warm (acá dentro hace calor)
+Outside, it starts to pour (afuera empieza a llover)
+
+Coming down (bajando)
+One love, two mouths (un amor, dos bocas)
+One love, one house (un amor, una casa)
+No shirt, no blouse (sin remera, sin blusa)
+Just us, you find out (solo nosotros, lo vas a descubrir)
+Nothing that I wouldn't wanna tell you about, no, no, no (nada que no quiera decirte)
+
+(x4)
+'Cause it's too cold (porque hace mucho frio)
+For you here and now (para vos acá y ahora)
+So let me hold (dejame sostener)
+Both your hands in the holes of my sweater (tus dos manos en las mangas de mi sueter)
+
+
+It's too cold (está muy frio)
+It's too cold (está muy frio)
+The holes of my sweater (las mangas de mi sueter)`
+    },
+    {
+      titulo: "Y mientras tanto el sol se muere",
+      artista: "Indio Solari y los fundamentalistas del aire acondicionado",
+      youtube: "https://www.youtube.com/watch?v=kJ1Fv23KxP0",
+      letra: `Todavía no usé mi milagro de hoy
+Qué corta es la vida, mi amor
+No voy a buscar más consuelos tontos, no
+Si pasa algo malo esta vez
+
+Te voy a buscar
+En la oscuridad
+
+Yo no sé si pueda volver a encontrarte, amor
+Si Dios no me quiere en tu eternidad
+Sueño con que duermo, no lleno mi tumba aún
+Y un poquito tarde, esta vez, se va a hacer
+
+Y mientras tanto, el Sol se muere
+Y no parece importarnos
+Mientras te quiero, el Sol se apaga
+Y si Dios queda en nada o no existe, te amaré mucho más
+
+Te voy a encontrar
+En la oscuridad
+
+Algún día, pronto, una de mis vidas
+Va a intentar matarme y lo va a lograr
+¿Cómo será andar solito allá en la muerte?
+Ay, mi amor, ya sin vos, sin tu sueño
+
+Yo no sabría echarte de menos
+Soy un ladrón que robó dolor
+Y si te pierdo, camino a casa
+Ya te dije esto antes, linda mía
+Te voy a encontrar
+
+Te voy a buscar
+Y te voy a encontrar
+
+Te buscaré
+Y te encontraré`
     }
-    // Agrega más canciones aquí (copia un bloque completo y pégalo abajo)
   ]
 };
 </script>
@@ -192,7 +724,6 @@ const CONFIG = {
 
     setTimeout(() => {
       $("contenido").style.display = "block";
-      $("bienahi-fin");
       armarPlaylist();
       armarLista();
     }, 2200);
@@ -208,45 +739,62 @@ const CONFIG = {
       const card = document.createElement("div");
       card.className = "cancion";
 
-      const cab = document.createElement("div");
-      cab.className = "cabecera";
-      cab.innerHTML = `
-        <div>
-          <div class="numero">${String(i + 1).padStart(2, "0")}</div>
-          <div class="titulo"></div>
-          <div class="artista"></div>
-        </div>
-        <div class="flecha">▾</div>`;
-      cab.querySelector(".titulo").textContent = c.titulo;
-      cab.querySelector(".artista").textContent = c.artista;
+      // Encabezado con información
+      const info = document.createElement("div");
+      info.className = "cabecera-info";
+      info.innerHTML = `
+        <div class="numero">${String(i + 1).padStart(2, "0")}</div>
+        <div class="titulo"></div>
+        <div class="artista"></div>
+      `;
+      info.querySelector(".titulo").textContent = c.titulo;
+      info.querySelector(".artista").textContent = c.artista;
 
-      const letra = document.createElement("div");
-      letra.className = "letra";
-      const inner = document.createElement("div");
-      const texto = document.createElement("div");
-      texto.className = "letra-texto";
-      texto.textContent = c.letra;
-      inner.appendChild(texto);
+      // Botones de acción
+      const acciones = document.createElement("div");
+      acciones.className = "acciones";
 
-      if (c.youtube && !c.youtube.includes("REEMPLAZAR")) {
+      const btnMsg = document.createElement("button");
+      btnMsg.className = "btn-mensaje";
+      btnMsg.textContent = "💌 Leer mi mensaje";
+
+      acciones.appendChild(btnMsg);
+
+      if (c.youtube && c.youtube.trim() !== "") {
         const yt = document.createElement("a");
         yt.className = "youtube";
         yt.href = c.youtube;
         yt.target = "_blank";
         yt.rel = "noopener";
-        yt.textContent = "▶ Escuchar en YouTube";
-        yt.style.marginLeft = "22px";
-        yt.style.marginBottom = "18px";
-        yt.style.display = "inline-block";
-        yt.addEventListener("click", (e) => e.stopPropagation());
-        inner.appendChild(yt);
+        yt.textContent = "▶ YouTube";
+        acciones.appendChild(yt);
       }
 
-      letra.appendChild(inner);
-      card.appendChild(cab);
-      card.appendChild(letra);
+      // Panel desplegable del mensaje
+      const despl = document.createElement("div");
+      despl.className = "mensaje-desplegable";
 
-      card.addEventListener("click", () => card.classList.toggle("abierta"));
+      const inner = document.createElement("div");
+      const texto = document.createElement("div");
+      texto.className = "mensaje-texto";
+      
+      // Limpiamos el texto para no mostrar la línea de comentario del desarrollador
+      const textoLimpio = c.letra.replace("// ESCRIBE TU COMENTARIO ROMÁNTICO AQUÍ\n", "");
+      texto.textContent = textoLimpio;
+
+      inner.appendChild(texto);
+      despl.appendChild(inner);
+
+      // Evento del botón para abrir/cerrar mensaje
+      btnMsg.addEventListener("click", () => {
+        const abierto = despl.classList.toggle("abierto");
+        btnMsg.textContent = abierto ? "Ocultar mensaje" : "💌 Leer mi mensaje";
+      });
+
+      card.appendChild(info);
+      card.appendChild(acciones);
+      card.appendChild(despl);
+
       cont.appendChild(card);
     });
   }
